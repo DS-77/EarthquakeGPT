@@ -1,2 +1,5 @@
 Comparative_models/lightning_logs
 Comparative_models/run
+runs
+wandb
+.idea
