@@ -2,21 +2,20 @@
 This module is the training (fine-tuning) and inferencing code for GPT 2 model.
 
 Author: Deja S.
-Version: 1.0.6
+Version: 1.0.7
 Created: 30-10-2024
-Edited: 23-11-2024
+Edited: 25-11-2024
 """
 
-import argparse
 import os
-
-import pandas as pd
-import torch
 import yaml
+import torch
+import argparse
+import pandas as pd
+from torch.utils.data import Dataset
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, root_mean_squared_error, \
     mean_absolute_percentage_error, r2_score
-from sklearn.model_selection import train_test_split
-from torch.utils.data import Dataset
 from transformers import GPT2Tokenizer, Trainer, TrainingArguments, GPT2Config, GPT2Model, PreTrainedModel
 
 
@@ -198,12 +197,16 @@ def main():
         model_path = f"{train_dir}/fine-tuned-gpt2"
         model.save_pretrained(model_path)
         tokeniser.save_pretrained(model_path)
+        torch.save(model.state_dict(), model_path + "/gpt_weights.pth")
 
     elif mode == "test":
         print("Evaluating Model ...")
 
         # Model configurations
-        model = EarthquakeGPT.from_pretrained(configs['settings']['load_weights'])
+        gpt_model = GPT2Model.from_pretrained("gpt2", attn_implementation="eager")
+        model = EarthquakeGPT(gpt_model)
+        model.load_state_dict(torch.load(os.path.join(configs['settings']['load_weights'], "gpt_weights.pth")))
+        tokeniser = GPT2Tokenizer.from_pretrained(configs['settings']['load_weights'])
         model.eval()
         model.to(device)
 
