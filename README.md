@@ -16,8 +16,33 @@ Abstract:
 |   GPT 2 (Ours)   |     |     |      |      |       |
 
 ### Dataset
+To evaluate and train our model and the comparative models, we used the [SOCR Earthquake Data](http://socr.ucla.edu/docs/resources/SOCR_Data/SOCR_Data_Earthquakes_Over3.html), which can be found in the `Data/` directory. We split the dataset into 80%(14425 samples) training and 20% (3607 samples) testing sets.
 
-### How to run our model:
+### How to run our models:
+
+#### 1. Install Environment and Dependencies
+
+#### Inferencing: EarthquakeGPT
+To run our model in inferencing model on our dataset, run the following command:
+```commandline
+cd code
+python Main_model/gpt_2.py -c Main_model/configs/gpt_2_configs.yaml -m test
+```
+> NOTE: Make sure the `load_weights` path in the configuration file is set to where you have stored you pre-trained weights. 
+
+#### Inferencing: Comparative Methods
+
+#### Training: Our Dataset
+To train our model on our dataset, you can run the following code:
+```commandline
+cd code
+python Main_model/gpt_2.py -c Main_model/configs/gpt_2_configs.yaml -m train
+```
+You can tweak the configurations of the model in the `code/Main_model/configs/gpt_2_config.yaml`. Here, you can change 
+where to store the weights and your output directory.
+
+#### Training: Your dataset
+
 
 ### Credit
 

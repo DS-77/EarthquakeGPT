@@ -3,8 +3,8 @@ This module implements the Long Short-Term Memory Recurrent Neural Network (LSTM
 magnitudes.
 
 Author: Deja S.
-Created: 20-11-2024
-Edited: 20-11-2024
+Created: 06-11-2024
+Edited: 06-11-2024
 Version: 1.0.0
 """
 
