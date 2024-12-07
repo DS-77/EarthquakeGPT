@@ -21,6 +21,10 @@ To evaluate and train our model and the comparative models, we used the [SOCR Ea
 ### How to run our models:
 
 #### 1. Install Environment and Dependencies
+To install the environment, use the following command:
+```commandline
+conda env create -f environment.yml
+```
 
 #### Inferencing: EarthquakeGPT
 To run our model in inferencing model on our dataset, run the following command:
