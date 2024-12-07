@@ -57,7 +57,7 @@ def train_transformer_model(train_df, val_df):
     return pred, van_transformer
 
 
-def perform_five_fold_cross_validation(training_data, weights_path, plot_path, results_path):
+def five_fold_cross_validation(training_data, weights_path, plot_path, results_path):
     """
     Perform five-fold cross-validation on the training data.
     :param training_data: (pd.DataFrame) Input training data
@@ -302,7 +302,7 @@ def main():
 
     if mode == "train":
         print("\n--- Starting Five-Fold Cross-Validation ...")
-        avg_MAE, avg_MSE, avg_RMSE, avg_MAPE, avg_r2, trained_model = perform_five_fold_cross_validation(
+        avg_MAE, avg_MSE, avg_RMSE, avg_MAPE, avg_r2, trained_model = five_fold_cross_validation(
             training_data,
             weights_path,
             plot_path,
