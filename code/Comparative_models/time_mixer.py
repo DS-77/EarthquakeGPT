@@ -13,10 +13,10 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.model_selection import KFold
 from neuralforecast import NeuralForecast
 from neuralforecast.models import TimeMixer
 from neuralforecast.losses.pytorch import MAE
+from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import mean_absolute_error, mean_squared_error, root_mean_squared_error, \
     mean_absolute_percentage_error, r2_score
 
@@ -36,9 +36,9 @@ def train_time_mixer_model(train_df, val_df):
                                                         enable_progress_bar=True,
                                                         scaler_type='robust',
                                                         early_stop_patience_steps=-1,
-                                                        val_check_steps=5,
-                                                        learning_rate=1e-3,
-                                                        max_steps=100,
+                                                        val_check_steps=50,
+                                                        learning_rate=1e-4,
+                                                        max_steps=1000,
                                                         batch_size=32,
                                                         )
                                               ],
@@ -60,47 +60,52 @@ def train_time_mixer_model(train_df, val_df):
 
 def five_fold_cross_validation(training_data, weights_path, plot_path, results_path):
     """
-    Perform five-fold cross-validation on the training data.
+    Perform five-fold time series cross-validation on the training data.
+    This method ensures that the splits respect the temporal order of the data.
+
     :param training_data: (pd.DataFrame) Input training data
     :param weights_path: (str) Path to save model weights
     :param plot_path: (str) Path to save performance plots
     :param results_path: (str) Path to save results
     :return: tuple: Average performance metrics and the last trained model
     """
-    # Setting up for Five-Fold Cross-Validation
-    kf = KFold(n_splits=5, shuffle=True, random_state=12)
+    # Setting up Time Series Cross-Validation
+    tscv = TimeSeriesSplit(n_splits=5)
+
+    # Initialize lists to store performance metrics
     avg_MAE, avg_MSE, avg_RMSE, avg_MAPE, avg_r2 = [], [], [], [], []
     last_trained_model = None
 
-    for fold, (train_index, val_index) in enumerate(kf.split(training_data)):
-        train_df, val_df = training_data.iloc[train_index], training_data.iloc[val_index]
+    # Iterate through the time series cross-validation splits
+    for fold, (train_index, val_index) in enumerate(tscv.split(training_data)):
+        # Split the data while maintaining temporal order
+        train_df = training_data.iloc[train_index]
+        val_df = training_data.iloc[val_index]
 
-        # Train and predict
+        # Train and predict using the time mixer model
         pred, time_mixer_model = train_time_mixer_model(train_df, val_df)
         last_trained_model = time_mixer_model
 
-        # Calculate metrics
-        if fold == 4:
-            # Case for the last k-fold split: 4x Groups of 2885 and 1x Group 2884
-            mae = mean_absolute_error(val_df['y'].values, pred['TimeMixer'][:2884].values)
-            mse = mean_squared_error(val_df['y'].values, pred['TimeMixer'][:2884].values)
-            rmse = root_mean_squared_error(val_df['y'].values, pred['TimeMixer'][:2884].values)
-            mape = mean_absolute_percentage_error(val_df['y'].values, pred['TimeMixer'][:2884].values)
-            r2 = r2_score(val_df['y'].values, pred['TimeMixer'][:2884].values)
-        else:
-            mae = mean_absolute_error(val_df['y'].values, pred['TimeMixer'].values)
-            mse = mean_squared_error(val_df['y'].values, pred['TimeMixer'].values)
-            rmse = root_mean_squared_error(val_df['y'].values, pred['TimeMixer'].values)
-            mape = mean_absolute_percentage_error(val_df['y'].values, pred['TimeMixer'].values)
-            r2 = r2_score(val_df['y'].values, pred['TimeMixer'].values)
+        # Calculate performance metrics
+        # Handle potential length discrepancies with val_df and pred
+        y_true = val_df['y'].values
+        y_pred = pred['TimeMixer'][:len(y_true)]
 
+        # Calculate and store performance metrics
+        mae = mean_absolute_error(y_true, y_pred)
+        mse = mean_squared_error(y_true, y_pred)
+        rmse = root_mean_squared_error(y_true, y_pred)
+        mape = mean_absolute_percentage_error(y_true, y_pred)
+        r2 = r2_score(y_true, y_pred)
+
+        # Append metrics for averaging
         avg_MSE.append(mse)
         avg_MAE.append(mae)
         avg_RMSE.append(rmse)
         avg_MAPE.append(mape)
         avg_r2.append(r2)
 
-        # Print Results
+        # Print Results for each fold
         print(f"\nFold {fold + 1} Results")
         print("=" * 80)
         print(f"MAE: {mae:.3f}")
@@ -114,12 +119,12 @@ def five_fold_cross_validation(training_data, weights_path, plot_path, results_p
     print("-- Saving model weights ...")
     last_trained_model.save(path=weights_path, model_index=None, overwrite=True, save_dataset=True)
 
-    # Plotting the Five-Fold Results
+    # Plotting the Time Series Cross-Validation Results
     plot_five_fold_performance(avg_MAE, avg_MSE, avg_RMSE, avg_MAPE, avg_r2, plot_path)
 
     # Save results to file
     save_five_fold_results(avg_MAE, avg_MSE, avg_RMSE, avg_MAPE, avg_r2, results_path)
-    return avg_MAE, avg_MSE, avg_RMSE, avg_MAPE, avg_r2, last_trained_model
+    return np.mean(avg_MAE), np.mean(avg_MSE), np.mean(avg_RMSE), np.mean(avg_MAPE), np.mean(avg_r2), last_trained_model
 
 
 def plot_five_fold_performance(avg_MAE, avg_MSE, avg_RMSE, avg_MAPE, avg_r2, plot_path):
@@ -251,8 +256,7 @@ def main():
     ap.add_argument("-t", "--training_data", type=str, required=True, help="The path to the training data")
     ap.add_argument("-v", "--testing_data", type=str, required=True, help="The path to the testing data")
     ap.add_argument("-m", "--mode", type=str, required=True, help="The mode: 'train' or 'test'")
-    # TODO: Add pre-trained weights path here.
-    ap.add_argument("-w", "--weights", type=str, required=False, default="run/time_mixer/weights",
+    ap.add_argument("-w", "--weights", type=str, required=False, default="runs/time_mixer/weights",
                     help="The path to pre-trained weights.")
     opts = vars(ap.parse_args())
 

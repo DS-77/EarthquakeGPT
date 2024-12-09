@@ -30,11 +30,11 @@ R2: 0.9895 ± 0.0034
 |  Random Fortest   |     ---     |   0.143    |     ---     |     ---     |   0.212   |
 |        KAN        |             |            |             |             |           |
 |        GRU        |             |            |             |             |           |  
-|       LSTM        |             |            |             |             |           |
+|       LSTM        |    0.311    |   0.184    |    0.429    |    0.087    |   0.007   |
 |    Transformer    |    0.299    |   0.218    |    0.467    |    0.079    |   0.250   |
-| TimeMixer (SOTA)  |             |            |             |             |           |
+| TimeMixer (SOTA)  |    0.301    |   0.212    |    0.461    |    0.081    |   0.219   |
 |  PatchTST (SOTA)  |             |            |             |             |           |
-|  EQGPT 2 (Ours)   |   0.0228    |   0.0016   |   0.0399    |   0.0061    |  0.9917   |
+|   EQGPT (Ours)    |   0.0228    |   0.0016   |   0.0399    |   0.0061    |  0.9917   |
 
 > The results presented for the EQGPT2 model represent the outcomes of a five-fold cross-validation process.
 ---
