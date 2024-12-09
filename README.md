@@ -1,6 +1,16 @@
 # EarthquakeGPT
 
-**_Abstract_**: The design of earthquake-resistant structures is a multidisciplinary field where advancements in Machine Learning (ML) and Artificial Intelligence (AI) are driving significant innovations. Peak Ground Acceleration (PGA), commonly referred to as earthquake magnitude, is a critical parameter for designing structures capable of withstanding seismic forces. This study introduces a regressive GPT-2 model specifically designed to predict earthquake magnitudes in California, United States, based on historical seismic data. The model leverages the natural language processing capabilities of GPT-2, repurposed for numerical regression tasks. Our results demonstrate the efficacy of the regressive GPT-2 model, achieving a Mean Absolute Error (MAE) of 0.0228, Mean Squared Error (MSE) of 0.0016, Root Mean Squared Error (RMSE) of 0.0399, Mean Absolute Percentage Error (MAPE) of 0.0061, and a coefficient of determination ($R^2$) of 0.9917. These metrics highlight the model’s exceptional predictive accuracy and potential as a robust tool for seismic risk assessment. By providing precise magnitude predictions, this work contributes to the development of safer, earthquake-resilient infrastructure and highlights the potential of AI-driven approaches in geophysics.
+**_Abstract_**: The design of earthquake-resistant structures is a multidisciplinary field where advancements in Machine 
+Learning (ML) and Artificial Intelligence (AI) are driving significant innovations. Peak Ground Acceleration (PGA), 
+commonly referred to as earthquake magnitude, is a critical parameter for designing structures capable of withstanding 
+seismic forces. This study introduces a regressive GPT-2 model specifically designed to predict earthquake magnitudes in 
+California, United States, based on historical seismic data. The model leverages the natural language processing 
+capabilities of GPT-2, repurposed for numerical regression tasks. Our results demonstrate the efficacy of the regressive 
+GPT-2 model, achieving a Mean Absolute Error (MAE) of 0.0228, Mean Squared Error (MSE) of 0.0016, Root Mean Squared 
+Error (RMSE) of 0.0399, Mean Absolute Percentage Error (MAPE) of 0.0061, and a coefficient of determination (R2) of 
+0.9917. These metrics highlight the model’s exceptional predictive accuracy and potential as a robust tool for seismic 
+risk assessment. By providing precise magnitude predictions, this work contributes to the development of safer, 
+earthquake-resilient infrastructure and highlights the potential of AI-driven approaches in geophysics.
 
 ## Initial Results
 
@@ -13,18 +23,18 @@ R2: 0.9895 ± 0.0034
 
 ### Comparative Analysis:
 
-|      Models       | MAE  &darr; | MSE &darr; | RMSE &darr; | MAPE &darr; | $R^2$ &uarr; |
-|:-----------------:|:-----------:|:----------:|:-----------:|:-----------:|:------------:|
-| Linear Regression |     ---     |   0.182    |     ---     |     ---     |   0.000067   |
-|        SVM        |     ---     |   7.210    |     ---     |     ---     |   -38.618    |
-|  Random Fortest   |     ---     |   0.143    |     ---     |     ---     |    0.212     |
-|        KAN        |             |            |             |             |              |
-|        GRU        |             |            |             |             |              |  
-|       LSTM        |             |            |             |             |              |
-|    Transformer    |    0.299    |   0.218    |    0.467    |    0.079    |    0.250     |
-| TimeMixer (SOTA)  |             |            |             |             |              |
-|  PatchTST (SOTA)  |             |            |             |             |              |
-|  EQGPT 2 (Ours)   |   0.0228    |   0.0016   |   0.0399    |   0.0061    |    0.9917    |
+|      Models       | MAE  &darr; | MSE &darr; | RMSE &darr; | MAPE &darr; | R2 &uarr; |
+|:-----------------:|:-----------:|:----------:|:-----------:|:-----------:|:---------:|
+| Linear Regression |     ---     |   0.182    |     ---     |     ---     | 0.000067  |
+|        SVM        |     ---     |   7.210    |     ---     |     ---     |  -38.618  |
+|  Random Fortest   |     ---     |   0.143    |     ---     |     ---     |   0.212   |
+|        KAN        |             |            |             |             |           |
+|        GRU        |             |            |             |             |           |  
+|       LSTM        |             |            |             |             |           |
+|    Transformer    |    0.299    |   0.218    |    0.467    |    0.079    |   0.250   |
+| TimeMixer (SOTA)  |             |            |             |             |           |
+|  PatchTST (SOTA)  |             |            |             |             |           |
+|  EQGPT 2 (Ours)   |   0.0228    |   0.0016   |   0.0399    |   0.0061    |  0.9917   |
 
 > The results presented for the EQGPT2 model represent the outcomes of a five-fold cross-validation process.
 ---
