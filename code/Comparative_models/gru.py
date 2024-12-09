@@ -32,9 +32,9 @@ def main():
     # Check if data is available
     training_path = opts["training_data"]
     testing_path = opts["testing_data"]
-    weights_path = "run/weights/GRU"
-    results_path = "run/results"
-    plot_path = "run/five_fold"
+    weights_path = "runs/GRU/weights/"
+    results_path = "runs/GRU/results"
+    plot_path = "runs/GRU/five_fold"
 
     if not os.path.exists(training_path):
         print(f"ERROR: '{training_path}' does not exist.")
@@ -46,7 +46,7 @@ def main():
 
     # Create required directories if not available
     if not os.path.exists(weights_path):
-        os.mkdir("run")
+        os.mkdir("runs")
         os.makedirs(weights_path)
         os.mkdir(results_path)
         os.mkdir(plot_path)
@@ -87,10 +87,10 @@ def main():
                         scaler_type='robust',
                         encoder_n_layers=2,
                         encoder_hidden_size=128,
-                        context_size=10,
+                        context_size=100,
                         decoder_hidden_size=128,
                         decoder_layers=2,
-                        max_steps=1,
+                        max_steps=500,
                         batch_size=32,
                         )
                     ],

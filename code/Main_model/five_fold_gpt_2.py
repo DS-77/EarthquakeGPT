@@ -242,7 +242,6 @@ def run_cross_validation(configs, full_df, test_df, tokeniser, n_splits = 5):
             args=training_args,
             train_dataset=train_data,
             eval_dataset=val_data,
-            callbacks=[EarlyStoppingCallback(early_stopping_patience=3)]
         )
 
         # Train

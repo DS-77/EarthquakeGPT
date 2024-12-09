@@ -13,10 +13,10 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from neuralforecast.models import VanillaTransformer
 from sklearn.model_selection import KFold
 from neuralforecast import NeuralForecast
-from neuralforecast.losses.pytorch import DistributionLoss
+from neuralforecast.losses.pytorch import MAE
+from neuralforecast.models import VanillaTransformer
 from sklearn.metrics import mean_absolute_error, mean_squared_error, root_mean_squared_error, \
     mean_absolute_percentage_error, r2_score
 
@@ -30,22 +30,22 @@ def train_transformer_model(train_df, val_df):
     """
     van_transformer = NeuralForecast(
         models=[VanillaTransformer(h=577, input_size=6,
-                    loss=DistributionLoss(),
-                    scaler_type='robust',
-                    encoder_n_layers=2,
-                    encoder_hidden_size=128,
-                    context_size=10,
-                    decoder_hidden_size=128,
-                    decoder_layers=2,
-                    max_steps=1,
-                    batch_size=32,
-                    )
+                                   loss=MAE(),
+                                   scaler_type='robust',
+                                   learning_rate=1e-4,
+                                   hidden_size=16,
+                                   conv_hidden_size=32,
+                                   n_head=2,
+                                   max_steps=500,
+                                   val_check_steps=50,
+                                   batch_size=8
+                                   )
                 ],
         freq='D'
     )
 
     # Train model
-    van_transformer.fit(train_df)
+    van_transformer.fit(train_df, val_size=577)
     pred = pd.DataFrame()
 
     # Predict values
@@ -171,7 +171,8 @@ def save_five_fold_results(avg_MAE, avg_MSE, avg_RMSE, avg_MAPE, avg_r2, results
         ff_file.write("\n")
 
         for i in range(len(avg_MAE)):
-            ff_file.write(f"{i+1}\t|\t{avg_MAE[i]:.3f}\t|\t{avg_MSE[i]:.3f}\t|\t{avg_RMSE[i]:.3f}\t|\t{avg_MAPE[i]:.3f}\t|\t{avg_r2[i]:.3f}\n")
+            ff_file.write(
+                f"{i + 1}\t|\t{avg_MAE[i]:.3f}\t|\t{avg_MSE[i]:.3f}\t|\t{avg_RMSE[i]:.3f}\t|\t{avg_MAPE[i]:.3f}\t|\t{avg_r2[i]:.3f}\n")
 
         ff_file.write("\n")
         ff_file.write("Training Five Fold Results: Transformer\n")
@@ -250,7 +251,8 @@ def main():
     ap.add_argument("-v", "--testing_data", type=str, required=True, help="The path to the testing data")
     ap.add_argument("-m", "--mode", type=str, required=True, help="The mode: 'train' or 'test'")
     # TODO: Add pre-trained weights path here.
-    ap.add_argument("-w", "--weights", type=str, required=False, default="run/weights/transformer", help="The path to pre-trained weights.")
+    ap.add_argument("-w", "--weights", type=str, required=False, default="runs/transformer/weights/",
+                    help="The path to pre-trained weights.")
     opts = vars(ap.parse_args())
 
     # Variables
@@ -260,9 +262,9 @@ def main():
     training_path = opts["training_data"]
     testing_path = opts["testing_data"]
     pretrain_weights = opts["weights"]
-    weights_path = "run/weights/transformer"
-    results_path = "run/results"
-    plot_path = "run/five_fold"
+    weights_path = "runs/transformer/weights"
+    results_path = "runs/transformer/results"
+    plot_path = "runs/transformer/five_fold"
 
     if not os.path.exists(training_path):
         print(f"ERROR: '{training_path}' does not exist.")
@@ -272,13 +274,15 @@ def main():
         print(f"ERROR: '{testing_path}' does  not exist.")
         exit()
 
-    if not os.path.exists(pretrain_weights):
+    if not os.path.exists(pretrain_weights) and mode == "test":
         print(f"ERROR: '{pretrain_weights}' does  not exist.")
         exit()
 
     # Create required directories if not available
+    if not os.path.exists("runs"):
+        os.mkdir("runs")
+
     if not os.path.exists(weights_path):
-        os.mkdir("run")
         os.makedirs(weights_path)
         os.mkdir(results_path)
         os.mkdir(plot_path)
@@ -289,7 +293,8 @@ def main():
 
     # Parse the data
     temp_training_data['unique_id'] = "earthquake_series"
-    temp_training_data['ds'] = pd.to_datetime(temp_training_data["Date(YYYY/MM/DD)"] + " " + temp_training_data["Time(UTC)"], errors='coerce')
+    temp_training_data['ds'] = pd.to_datetime(
+        temp_training_data["Date(YYYY/MM/DD)"] + " " + temp_training_data["Time(UTC)"], errors='coerce')
     temp_training_data.rename(columns={"Magnitude(ergs)": "y"}, inplace=True)
     training_data = temp_training_data[['unique_id', 'ds', 'y', 'Latitude(deg)', 'Longitude(deg)', 'Depth(km)']]
 
@@ -298,7 +303,6 @@ def main():
         temp_testing_data["Date(YYYY/MM/DD)"] + " " + temp_testing_data["Time(UTC)"], errors='coerce')
     temp_testing_data.rename(columns={"Magnitude(ergs)": "y"}, inplace=True)
     testing_data = temp_testing_data[['unique_id', 'ds', 'y', 'Latitude(deg)', 'Longitude(deg)', 'Depth(km)']]
-
 
     if mode == "train":
         print("\n--- Starting Five-Fold Cross-Validation ...")
@@ -327,6 +331,7 @@ def main():
     else:
         print(f"ERROR: Can not recognise mode: '{mode}'")
         exit()
+
 
 if __name__ == '__main__':
     main()

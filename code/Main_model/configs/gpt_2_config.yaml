@@ -16,4 +16,4 @@ settings:
   train_data_path: "../Data/train.csv"
   test_data_path: "../Data/test.csv"
   out_dir: "./runs"
-  load_weights: "./runs/train/fine-tuned-gpt2"
+  load_weights: "./runs/fold_2/best_model"
