@@ -83,9 +83,10 @@ class EarthquakeDataset(Dataset):
 
 
 def create_text(row):
-    return (f"Earthquake details: Date {row['Date(YYYY/MM/DD)']} at {row['Time(UTC)']}, "
-            f"Location: Lat {row['Latitude(deg)']}, Lon {row['Longitude(deg)']}, "
-            f"Depth {row['Depth(km)']} km, Magnitude {row['Magnitude(ergs)']} ergs.")
+    return (
+        f"Predict the earthquake magnitude based on these details: Date {row['Date(YYYY/MM/DD)']} at {row['Time(UTC)']}, "
+        f"Location: Lat {row['Latitude(deg)']}, Lon {row['Longitude(deg)']}, "
+        f"Depth {row['Depth(km)']} km. The magnitude is: ")
 
 
 def load_config(file_path):
@@ -181,7 +182,7 @@ def test_model(model, test_df, tokeniser):
     return metrics, pred
 
 
-def run_cross_validation(configs, full_df, test_df, tokeniser, n_splits = 5):
+def run_cross_validation(configs, full_df, test_df, tokeniser, n_splits=5):
     """
     Perform K-Fold cross-validation with model saving
     :param configs: Configuration dictionary
@@ -208,6 +209,7 @@ def run_cross_validation(configs, full_df, test_df, tokeniser, n_splits = 5):
     os.makedirs(output_dir, exist_ok=True)
 
     for fold, (train_idx, val_idx) in enumerate(kf.split(full_df), 1):
+        torch.cuda.empty_cache()
         print(f"\n{'=' * 20} Fold {fold} {'=' * 20}")
 
         train_df = full_df.iloc[train_idx]
@@ -234,7 +236,9 @@ def run_cross_validation(configs, full_df, test_df, tokeniser, n_splits = 5):
             evaluation_strategy="epoch",
             save_strategy="epoch",
             load_best_model_at_end=True,
-            metric_for_best_model="eval_loss"
+            metric_for_best_model="eval_loss",
+            gradient_accumulation_steps=4,
+            fp16=True
         )
 
         trainer = Trainer(
@@ -307,7 +311,8 @@ def main():
     # Argument Parser
     ap = argparse.ArgumentParser()
     ap.add_argument("-c", "--config", required=True, type=str, help="Path to configuration file")
-    ap.add_argument("-m", "--mode", required=False, default="train", type=str, help="The mode to run the model: 'train' or 'test'")
+    ap.add_argument("-m", "--mode", required=False, default="train", type=str,
+                    help="The mode to run the model: 'train' or 'test'")
     opts = vars(ap.parse_args())
 
     # Variables
@@ -335,7 +340,6 @@ def main():
         # Run testing mode
         test_gpt2 = load_model(configs['settings']['load_weights'], tokeniser)
         results = test_model(test_gpt2, test_df, tokeniser)
-
     else:
         print(f"ERROR: '{mode}' is not a valid option. Choose 'train' or 'test'")
         exit()

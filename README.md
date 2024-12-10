@@ -29,20 +29,18 @@ R2: 0.9895 ± 0.0034
 |        SVM        |     ---     |   7.210    |     ---     |     ---     |  -38.618  |
 |  Random Fortest   |     ---     |   0.143    |     ---     |     ---     |   0.212   |
 |        KAN        |    0.303    |   0.189    |    0.434    |    0.083    |   0.083   |
-|        GRU        |             |            |             |             |           |  
+|        GRU        |    0.305    |   0.175    |    0.419    |    0.085    |   0.007   |  
 |       LSTM        |    0.311    |   0.184    |    0.429    |    0.087    |   0.007   |
 |    Transformer    |    0.299    |   0.218    |    0.467    |    0.079    |   0.250   |
 | TimeMixer (SOTA)  |    0.301    |   0.212    |    0.461    |    0.081    |   0.219   |
-|  PatchTST (SOTA)  |             |            |             |             |           |
-|   EQGPT (Ours)    |   0.0228    |   0.0016   |   0.0399    |   0.0061    |  0.9917   |
+|  PatchTST (SOTA)  |    0.298    |   0.202    |    0.449    |    0.080    |   0.159   |
+|   EQGPT (Ours)    |    0.322    |   0.175    |    0.418    |    0.092    | 0.0.0022  |
 
 > The results presented for the EQGPT2 model represent the outcomes of a five-fold cross-validation process.
----
 
 ## Dataset
 To evaluate and train our model and the comparative models, we used the [SOCR Earthquake Data](http://socr.ucla.edu/docs/resources/SOCR_Data/SOCR_Data_Earthquakes_Over3.html), which can be found in the `Data/` directory. We split the dataset into 80%(14425 samples) training and 20% (3607 samples) testing sets.
 
----
 ## How to run our models:
 
 #### 1. Install Environment and Dependencies
@@ -99,7 +97,6 @@ where to store the weights and your output directory.
 ```commandline
 python Main_model/gpt_2.py -c Main_model/configs/gpt_2_configs.yaml -m train
 ```
----
 
 ## Acknowledgement
 

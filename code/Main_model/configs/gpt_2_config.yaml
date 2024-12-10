@@ -6,14 +6,14 @@ settings:
   lr: 1e-5
   per_device_train_batch_size: 2
   per_device_eval_batch_size: 2
-  num_epoch: 5
+  num_epoch: 10
   weight_decay: 0.01
   warmup_steps: 500
   label_smoothing_factor: 0.1
   gradient_accumulation_steps: 1
   logging_steps: 100
   save_total_limit: 2
-  train_data_path: "../Data/train.csv"
-  test_data_path: "../Data/test.csv"
+  train_data_path: "../Data/train_earthquake_data.csv"
+  test_data_path: "../Data/test_earthquake_data.csv"
   out_dir: "./runs"
-  load_weights: "./runs/fold_2/best_model"
+  load_weights: "./runs/fold_3/"
