@@ -1,7 +1,9 @@
 code/Comparative_models/lightning_logs/
 code/Comparative_models/runs/
-runs
-code/runs
+code/Comparative_models/run/
+Comparative_models/
+runs/
+code/runs/
 lightning_logs/
 wandb
-.idea
+.idea/

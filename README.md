@@ -1,25 +1,28 @@
 # EarthquakeGPT
 
-**_Abstract_**: The design of earthquake-resistant structures is a multidisciplinary field where advancements in Machine 
-Learning (ML) and Artificial Intelligence (AI) are driving significant innovations. Peak Ground Acceleration (PGA), 
-commonly referred to as earthquake magnitude, is a critical parameter for designing structures capable of withstanding 
-seismic forces. This study introduces a regressive GPT-2 model specifically designed to predict earthquake magnitudes in 
-California, United States, based on historical seismic data. The model leverages the natural language processing 
-capabilities of GPT-2, repurposed for numerical regression tasks. Our results demonstrate the efficacy of the regressive 
-GPT-2 model, achieving a Mean Absolute Error (MAE) of 0.0228, Mean Squared Error (MSE) of 0.0016, Root Mean Squared 
-Error (RMSE) of 0.0399, Mean Absolute Percentage Error (MAPE) of 0.0061, and a coefficient of determination (R2) of 
-0.9917. These metrics highlight the model’s exceptional predictive accuracy and potential as a robust tool for seismic 
-risk assessment. By providing precise magnitude predictions, this work contributes to the development of safer, 
-earthquake-resilient infrastructure and highlights the potential of AI-driven approaches in geophysics.
+**_Abstract_**: The design of earthquake-resistant structures is a multidisci-
+plinary field where advancements in Machine Learning (ML)
+and Artificial Intelligence (AI) are driving significant innova-
+tions. Peak Ground Acceleration (PGA), commonly referred
+to as earthquake magnitude, is a critical parameter for design-
+ing structures capable of withstanding seismic forces. This
+study introduces EQGPT, a regressive GPT-2 model specif-
+ically designed to predict earthquake magnitudes in Cali-
+fornia, United States, based on historical seismic data. The
+model leverages the natural language processing capabilities
+of GPT-2, repurposed for numerical regression tasks. Our re-
+sults demonstrate the performance of EQGPT, achieving a
+Mean Absolute Error (MAE) of 0.322, Mean Squared Error
+(MSE) of 0.175, Root Mean Squared Error (RMSE) of 0.418,
+Mean Absolute Percentage Error (MAPE) of 0.092, and a co-
+efficient of determination (R2 ) of 0.002. These metrics under-
+score the model’s predictive capabilities and its potential util-
+ity in seismic risk assessment. By offering reliable magnitude
+predictions, this work contributes to the ongoing development
+of safer, earthquake-resilient infrastructure and highlights the
+promise of AI-driven approaches in geophysics.
 
 ## Initial Results
-
-### Cross-Validation Summary
-MAE: 0.0249 ± 0.0024  
-MSE: 0.0020 ± 0.0007  
-RMSE: 0.0444 ± 0.0081  
-MAPE: 0.0065 ± 0.0005  
-R2: 0.9895 ± 0.0034
 
 ### Comparative Analysis:
 
@@ -34,7 +37,7 @@ R2: 0.9895 ± 0.0034
 |    Transformer    |    0.299    |   0.218    |    0.467    |    0.079    |   0.250   |
 | TimeMixer (SOTA)  |    0.301    |   0.212    |    0.461    |    0.081    |   0.219   |
 |  PatchTST (SOTA)  |    0.298    |   0.202    |    0.449    |    0.080    |   0.159   |
-|   EQGPT (Ours)    |    0.322    |   0.175    |    0.418    |    0.092    | 0.0.0022  |
+|   EQGPT (Ours)    |    0.322    |   0.175    |    0.418    |    0.092    | 0.0022  |
 
 > The results presented for the EQGPT2 model represent the outcomes of a five-fold cross-validation process.
 
